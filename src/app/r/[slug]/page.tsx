@@ -198,6 +198,15 @@ export default function PublicMenuPage({ params }: { params: Promise<{ slug: str
         )}
       </div>
 
+      {/* Online ordering CTA */}
+      <div className="max-w-lg mx-auto px-4 pb-4">
+        <a href={`/r/${slug}/pedido-online`}
+          className="block bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl p-4 text-center shadow-lg shadow-orange-500/30 hover:shadow-xl transition-all">
+          <p className="font-bold">Pedir para llevar o a domicilio</p>
+          <p className="text-xs text-orange-100 mt-0.5">Sin comisiones — Directamente con nosotros</p>
+        </a>
+      </div>
+
       {/* Powered by */}
       <div className="text-center py-4">
         <p className="text-[10px] text-slate-300 uppercase tracking-widest">Powered by Mi Camarero</p>
