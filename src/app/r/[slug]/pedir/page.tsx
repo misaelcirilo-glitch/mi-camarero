@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Search, Plus, Minus, ShoppingCart, Trash2, Send, CheckCircle, Loader2, ChevronDown, Star, X } from 'lucide-react'
+import { Search, Plus, Minus, ShoppingCart, Trash2, Send, CheckCircle, Loader2, ChevronDown, Star, X, Sparkles } from 'lucide-react'
 
 interface Item {
   id: string
@@ -61,6 +61,21 @@ function PedirContent({ params }: { params: Promise<{ slug: string }> }) {
   const [itemDetail, setItemDetail] = useState<Item | null>(null)
   const [detailExtras, setDetailExtras] = useState<{ name: string; price: number }[]>([])
   const [detailNotes, setDetailNotes] = useState('')
+  const [suggestions, setSuggestions] = useState<Array<{ item_id: string; name: string; price: number; reason: string; type: string; discount_percent: number; message?: string }>>([])
+
+  // Cargar sugerencias cuando cambia el carrito
+  useEffect(() => {
+    if (cart.length === 0) { setSuggestions([]); return }
+    const ids = [...new Set(cart.map(c => c.menuItem.id))]
+    fetch(`/api/public/${slug}/sugerencias`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item_ids: ids }),
+    })
+      .then(r => r.json())
+      .then(data => setSuggestions(data.suggestions || []))
+      .catch(() => {})
+  }, [cart, slug])
 
   useEffect(() => {
     fetch(`/api/public/${slug}/carta`)
@@ -271,6 +286,46 @@ function PedirContent({ params }: { params: Promise<{ slug: string }> }) {
           )
         })}
       </div>
+
+      {/* Sugerencias upselling */}
+      {suggestions.length > 0 && cart.length > 0 && (
+        <div className="max-w-lg mx-auto px-4 pb-4">
+          <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl border border-orange-100 p-4">
+            <p className="text-xs font-bold text-orange-700 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+              <Sparkles size={14} /> Te puede interesar
+            </p>
+            <div className="space-y-2">
+              {suggestions.map(s => {
+                const originalItem = items.find(i => i.id === s.item_id)
+                return (
+                  <div key={s.item_id} className="bg-white rounded-xl p-3 flex items-center gap-3 shadow-sm">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-slate-800 truncate">{s.name}</p>
+                      <p className="text-[10px] text-orange-600 font-medium">{s.message || s.reason}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      {s.discount_percent > 0 ? (
+                        <div>
+                          <p className="text-[10px] text-slate-400 line-through">{Number(s.price).toFixed(2)}</p>
+                          <p className="font-black text-green-600 text-sm">{(Number(s.price) * (1 - s.discount_percent / 100)).toFixed(2)}</p>
+                        </div>
+                      ) : (
+                        <p className="font-black text-orange-600 text-sm">{Number(s.price).toFixed(2)}</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => originalItem && quickAdd(originalItem)}
+                      className="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center shrink-0 hover:bg-orange-600 transition-colors"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Item detail modal (for extras) */}
       {itemDetail && (

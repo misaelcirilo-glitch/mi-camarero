@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, UtensilsCrossed, ClipboardList, Grid3X3,
-  ChefHat, Users, Settings, LogOut, Crown, ChevronLeft, ChevronRight
+  ChefHat, Users, Settings, LogOut, Crown, ChevronLeft, ChevronRight, Sparkles
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { href: '/pedidos', label: 'Pedidos', icon: ClipboardList },
   { href: '/mesas', label: 'Mesas', icon: Grid3X3 },
   { href: '/cocina', label: 'Cocina', icon: ChefHat },
+  { href: '/upselling', label: 'Upselling', icon: Sparkles },
   { href: '/clientes', label: 'Clientes', icon: Users },
   { href: '/config', label: 'Ajustes', icon: Settings },
 ]
