@@ -3,7 +3,7 @@ import { jwtVerify } from 'jose'
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret')
 
-const publicPaths = ['/login', '/signup', '/api/auth/login', '/api/auth/signup', '/r/', '/api/public/', '/onboarding']
+const publicPaths = ['/login', '/signup', '/api/auth/login', '/api/auth/signup', '/r/', '/api/public/', '/onboarding', '/landing']
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
