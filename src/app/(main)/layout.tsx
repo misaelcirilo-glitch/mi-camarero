@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/shared/components/sidebar'
 import { useI18n } from '@/shared/lib/i18n'
+import { AlertTriangle } from 'lucide-react'
+import Link from 'next/link'
 
 interface SessionData {
   user: { id: string; name: string; email: string; role: string }
@@ -31,8 +33,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="flex items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        <div className="flex flex-col items-center gap-3 text-slate-400">
+          <div className="w-10 h-10 border-[3px] border-orange-500 border-t-transparent rounded-full animate-spin" />
           <span className="text-sm font-medium">{t.main.loading}</span>
         </div>
       </div>
@@ -46,21 +48,29 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-slate-50">
       <Sidebar user={session.user} tenant={session.tenant} plan={session.plan} />
-      <main className="ml-64 p-6 transition-all">
+      <main className="ml-60 min-h-screen">
+        {/* Trial banner */}
         {session.tenant.subscriptionStatus === 'trial' && (
-          <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl p-4 mb-6 flex items-center justify-between">
-            <div>
-              <p className="font-bold text-sm">{t.main.trialBanner}</p>
-              <p className="text-xs text-orange-100">
-                {t.main.trialEnds} {new Date(session.tenant.trialEndsAt).toLocaleDateString(dateLocales[locale], { day: 'numeric', month: 'long' })}
-              </p>
+          <div className="bg-orange-50 border-b border-orange-100 px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle size={16} className="text-orange-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-orange-800 text-sm">{t.main.trialBanner}</p>
+                <p className="text-xs text-orange-600">
+                  {t.main.trialEnds} {new Date(session.tenant.trialEndsAt).toLocaleDateString(dateLocales[locale], { day: 'numeric', month: 'long' })}
+                </p>
+              </div>
             </div>
-            <button className="bg-white text-orange-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-orange-50 transition-colors shadow-sm">
+            <Link href="/planes" className="bg-orange-500 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-orange-600 transition-colors shadow-sm">
               {t.main.seePlans}
-            </button>
+            </Link>
           </div>
         )}
-        {children}
+        <div className="p-6">
+          {children}
+        </div>
       </main>
     </div>
   )

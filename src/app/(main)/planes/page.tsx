@@ -46,27 +46,32 @@ function PlanesContent() {
 
   const plans = ['starter', 'pro', 'premium']
   const PLAN_COLORS: Record<string, { border: string; bg: string; btn: string; badge: string }> = {
-    starter: { border: 'border-slate-200', bg: 'bg-white', btn: 'bg-slate-900 hover:bg-slate-800', badge: 'bg-slate-100 text-slate-700' },
-    pro: { border: 'border-orange-300', bg: 'bg-gradient-to-b from-orange-50 to-white', btn: 'bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/30', badge: 'bg-orange-100 text-orange-700' },
-    premium: { border: 'border-purple-300', bg: 'bg-gradient-to-b from-purple-50 to-white', btn: 'bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-600/30', badge: 'bg-purple-100 text-purple-700' },
+    starter: { border: 'border-slate-200', bg: 'bg-white', btn: 'bg-orange-500 hover:bg-orange-600', badge: 'bg-slate-50 text-slate-700 border border-slate-200' },
+    pro: { border: 'border-orange-200', bg: 'bg-gradient-to-b from-orange-50 to-white', btn: 'bg-orange-500 hover:bg-orange-600 shadow-sm', badge: 'bg-orange-50 text-orange-700 border border-orange-200' },
+    premium: { border: 'border-purple-200', bg: 'bg-gradient-to-b from-purple-50 to-white', btn: 'bg-orange-500 hover:bg-orange-600 shadow-sm', badge: 'bg-purple-50 text-purple-700 border border-purple-200' },
   }
 
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-black text-slate-900 flex items-center justify-center gap-2"><Crown className="text-orange-500" size={24} /> {t.planes.title}</h1>
+        <h1 className="text-2xl font-bold text-slate-900 flex items-center justify-center gap-2">
+          <span className="w-10 h-10 bg-orange-50 ring-1 ring-orange-100 rounded-xl flex items-center justify-center">
+            <Crown className="text-orange-500" size={20} />
+          </span>
+          {t.planes.title}
+        </h1>
         <p className="text-sm text-slate-500 mt-1">{t.planes.subtitle}</p>
       </div>
 
-      {success && <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl p-4 text-center text-sm font-bold">Suscripcion activada! Tu plan ha sido actualizado.</div>}
-      {canceled && <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-xl p-4 text-center text-sm">Pago cancelado. Puedes intentarlo cuando quieras.</div>}
+      {success && <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-4 text-center text-sm font-bold">Suscripcion activada! Tu plan ha sido actualizado.</div>}
+      {canceled && <div className="bg-amber-50 border border-amber-200 text-amber-700 rounded-lg p-4 text-center text-sm font-medium">Pago cancelado. Puedes intentarlo cuando quieras.</div>}
 
       {/* Billing toggle */}
       <div className="flex justify-center">
-        <div className="bg-slate-100 rounded-xl p-1 flex">
-          <button onClick={() => setBilling('monthly')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${billing === 'monthly' ? 'bg-white shadow text-slate-900' : 'text-slate-500'}`}>Mensual</button>
-          <button onClick={() => setBilling('yearly')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-1.5 ${billing === 'yearly' ? 'bg-white shadow text-slate-900' : 'text-slate-500'}`}>
-            Anual <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-bold">-17%</span>
+        <div className="bg-slate-100 rounded-lg p-1 flex">
+          <button onClick={() => setBilling('monthly')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${billing === 'monthly' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}>Mensual</button>
+          <button onClick={() => setBilling('yearly')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-1.5 ${billing === 'yearly' ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500'}`}>
+            Anual <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md font-bold">-17%</span>
           </button>
         </div>
       </div>
@@ -81,38 +86,38 @@ function PlanesContent() {
           const isPopular = plan === 'pro'
 
           return (
-            <div key={plan} className={`rounded-2xl border-2 ${colors.border} ${colors.bg} p-6 relative ${isPopular ? 'ring-2 ring-orange-400/50' : ''}`}>
+            <div key={plan} className={`rounded-2xl border ${colors.border} ${colors.bg} p-6 relative shadow-sm ${isPopular ? 'ring-1 ring-orange-200' : ''}`}>
               {isPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-md flex items-center gap-1 shadow-sm">
                   <Sparkles size={12} /> {t.landing.mostPopular}
                 </div>
               )}
 
               <div className="text-center mb-6">
-                <span className={`text-xs font-bold px-2 py-1 rounded-full ${colors.badge} uppercase tracking-wide`}>{plan}</span>
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-md ${colors.badge} uppercase tracking-wider`}>{plan}</span>
                 <div className="mt-3">
-                  <span className="text-4xl font-black text-slate-900">{billing === 'yearly' ? (price.yearly / 12).toFixed(0) : price.monthly}</span>
+                  <span className="text-4xl font-bold tabular-nums text-slate-900">{billing === 'yearly' ? (price.yearly / 12).toFixed(0) : price.monthly}</span>
                   <span className="text-sm text-slate-500"> EUR{t.planes.perMonth}</span>
                 </div>
-                {billing === 'yearly' && <p className="text-xs text-green-600 font-bold mt-1">{price.yearly} EUR/ano (ahorras {price.monthly * 12 - price.yearly} EUR)</p>}
+                {billing === 'yearly' && <p className="text-xs text-emerald-600 font-bold mt-1">{price.yearly} EUR/ano (ahorras {price.monthly * 12 - price.yearly} EUR)</p>}
               </div>
 
               <div className="space-y-3 mb-6">
                 {features.map(f => (
                   <div key={f.label} className="flex items-start gap-2">
                     <span className="text-base mt-0.5">{f.icon}</span>
-                    <div><p className="text-sm font-bold text-slate-700">{f.label}</p><p className="text-[10px] text-slate-400">{f.description}</p></div>
+                    <div><p className="text-sm font-semibold text-slate-700">{f.label}</p><p className="text-[10px] text-slate-400">{f.description}</p></div>
                   </div>
                 ))}
               </div>
 
               {isCurrent ? (
-                <button onClick={handlePortal} className="w-full py-3 rounded-xl font-bold text-sm border-2 border-slate-300 text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors">
+                <button onClick={handlePortal} className="w-full py-3 rounded-lg font-bold text-sm border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors">
                   {subscriptionStatus === 'active' ? <><ExternalLink size={14} /> {t.planes.manageSub}</> : t.planes.currentPlan}
                 </button>
               ) : (
                 <button onClick={() => handleSubscribe(plan)} disabled={loading === plan}
-                  className={`w-full py-3 rounded-xl font-bold text-sm text-white transition-colors flex items-center justify-center gap-2 ${colors.btn} disabled:opacity-50`}>
+                  className={`w-full py-3 rounded-lg font-bold text-sm text-white transition-colors flex items-center justify-center gap-2 ${colors.btn} disabled:opacity-50`}>
                   {loading === plan ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                   {loading === plan ? t.common.loading : `${t.planes.selectPlan} ${plan}`}
                 </button>

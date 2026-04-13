@@ -49,13 +49,13 @@ export default function PedidosPage() {
   const [refreshing, setRefreshing] = useState(false)
 
   const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string; icon: React.ElementType }> = {
-    pending: { bg: 'bg-yellow-50 border-yellow-200', text: 'text-yellow-700', label: t.dashboard.status.pending, icon: Clock },
-    confirmed: { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', label: t.dashboard.status.confirmed, icon: CheckCircle },
-    preparing: { bg: 'bg-orange-50 border-orange-200', text: 'text-orange-700', label: t.dashboard.status.preparing, icon: ChefHat },
-    ready: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', label: t.dashboard.status.ready, icon: Utensils },
-    served: { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', label: t.dashboard.status.served, icon: CheckCircle },
-    paid: { bg: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700', label: t.dashboard.status.paid, icon: CreditCard },
-    cancelled: { bg: 'bg-red-50 border-red-200', text: 'text-red-700', label: t.dashboard.status.cancelled, icon: XCircle },
+    pending: { bg: 'bg-amber-50 border border-amber-200', text: 'text-amber-700', label: t.dashboard.status.pending, icon: Clock },
+    confirmed: { bg: 'bg-blue-50 border border-blue-200', text: 'text-blue-700', label: t.dashboard.status.confirmed, icon: CheckCircle },
+    preparing: { bg: 'bg-orange-50 border border-orange-200', text: 'text-orange-700', label: t.dashboard.status.preparing, icon: ChefHat },
+    ready: { bg: 'bg-emerald-50 border border-emerald-200', text: 'text-emerald-700', label: t.dashboard.status.ready, icon: Utensils },
+    served: { bg: 'bg-slate-50 border border-slate-200', text: 'text-slate-600', label: t.dashboard.status.served, icon: CheckCircle },
+    paid: { bg: 'bg-emerald-50 border border-emerald-200', text: 'text-emerald-700', label: t.dashboard.status.paid, icon: CreditCard },
+    cancelled: { bg: 'bg-red-50 border border-red-200', text: 'text-red-700', label: t.dashboard.status.cancelled, icon: XCircle },
   }
 
   const STATUSES = [
@@ -124,14 +124,17 @@ export default function PedidosPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <ClipboardList className="text-blue-500" size={24} /> {t.pedidos.title}
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <span className="w-10 h-10 bg-blue-50 ring-1 ring-blue-100 rounded-xl flex items-center justify-center">
+              <ClipboardList className="text-blue-500" size={20} />
+            </span>
+            {t.pedidos.title}
           </h1>
           <p className="text-sm text-slate-500 mt-1">{t.pedidos.subtitle}</p>
         </div>
         <button
           onClick={() => { setRefreshing(true); loadOrders() }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
         >
           <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} /> {t.pedidos.newOrder}
         </button>
@@ -142,7 +145,7 @@ export default function PedidosPage() {
         {STATUSES.map(s => (
           <button key={s.id} onClick={() => setFilter(s.id)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold border whitespace-nowrap transition-all ${
-              filter === s.id ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+              filter === s.id ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
             }`}>
             {s.label}
           </button>
@@ -165,13 +168,13 @@ export default function PedidosPage() {
             const nextConfig = next ? STATUS_CONFIG[next] : null
 
             return (
-              <div key={order.id} className={`rounded-2xl border-2 overflow-hidden transition-all ${config.bg}`}>
+              <div key={order.id} className={`rounded-2xl overflow-hidden transition-all shadow-sm ${config.bg}`}>
                 {/* Order header */}
                 <div className="p-4 border-b border-slate-100/50">
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg font-black text-slate-800">#{order.order_number}</span>
-                      <span className={`text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 ${config.text}`}>
+                      <span className="text-lg font-bold text-slate-800">#{order.order_number}</span>
+                      <span className={`text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 px-2.5 py-1 rounded-md border ${config.text} ${config.bg}`}>
                         <Icon size={12} /> {config.label}
                       </span>
                     </div>
@@ -202,7 +205,7 @@ export default function PedidosPage() {
                         )}
                         {item.notes && <p className="text-[10px] text-orange-500 italic">{item.notes}</p>}
                       </div>
-                      <span className="text-xs font-bold text-slate-600 shrink-0 ml-2">
+                      <span className="text-xs font-bold tabular-nums text-slate-600 shrink-0 ml-2">
                         {formatPrice(Number(item.unit_price) * item.quantity)}
                       </span>
                     </div>
@@ -213,14 +216,14 @@ export default function PedidosPage() {
                 {/* Footer */}
                 <div className="p-4 border-t border-slate-100/50">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs text-slate-500">{t.pedidos.total}</span>
-                    <span className="text-lg font-black text-slate-900">{formatPrice(Number(order.total))}</span>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t.pedidos.total}</span>
+                    <span className="text-lg font-bold tabular-nums text-slate-900">{formatPrice(Number(order.total))}</span>
                   </div>
                   <div className="flex gap-2">
                     {next && nextConfig && (
                       <button
                         onClick={() => handleAdvanceStatus(order.id, order.status)}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors shadow-sm"
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-sm"
                       >
                         <nextConfig.icon size={14} /> {nextConfig.label}
                       </button>
@@ -228,7 +231,7 @@ export default function PedidosPage() {
                     {order.status !== 'paid' && order.status !== 'cancelled' && (
                       <button
                         onClick={() => handleCancel(order.id)}
-                        className="px-3 py-2.5 rounded-xl text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+                        className="px-3 py-2.5 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
                       >
                         <XCircle size={14} />
                       </button>

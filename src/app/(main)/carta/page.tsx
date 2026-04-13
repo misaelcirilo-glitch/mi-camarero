@@ -130,8 +130,10 @@ export default function CartaPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <UtensilsCrossed className="text-orange-500" size={24} />
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <span className="w-10 h-10 bg-orange-50 ring-1 ring-orange-100 rounded-xl flex items-center justify-center">
+              <UtensilsCrossed className="text-orange-500" size={20} />
+            </span>
             {t.carta.title}
           </h1>
           <p className="text-sm text-slate-500 mt-1">{items.length} {t.carta.noDishes === 'Sin platos' ? 'platos' : 'platos'} en {categories.length} categorias</p>
@@ -139,13 +141,13 @@ export default function CartaPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setShowCategoryForm(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <FolderPlus size={16} /> {t.carta.addCategory}
           </button>
           <button
             onClick={() => { setEditingItem(null); setModalOpen(true) }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-sm"
           >
             <Plus size={16} /> {t.carta.addDish}
           </button>
@@ -154,27 +156,27 @@ export default function CartaPage() {
 
       {/* Category form inline */}
       {showCategoryForm && (
-        <form onSubmit={handleCreateCategory} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex gap-3 items-end">
+        <form onSubmit={handleCreateCategory} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex gap-3 items-end">
           <div className="w-20">
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Icono</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Icono</label>
             <input
               type="text" value={categoryIcon} maxLength={2}
               onChange={e => setCategoryIcon(e.target.value)}
               placeholder="🍕"
-              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-lg focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-center text-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
             />
           </div>
           <div className="flex-1">
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.carta.categoryName}</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t.carta.categoryName}</label>
             <input
               type="text" required value={categoryName}
               onChange={e => setCategoryName(e.target.value)}
               placeholder="Ej: Entrantes, Carnes, Postres..."
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
               autoFocus
             />
           </div>
-          <button type="submit" disabled={savingCategory} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={savingCategory} className="px-6 py-2.5 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 transition-colors shadow-sm">
             {savingCategory ? t.carta.saving : t.carta.save}
           </button>
           <button type="button" onClick={() => setShowCategoryForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">
@@ -191,7 +193,7 @@ export default function CartaPage() {
             <input
               type="text" value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Buscar plato..."
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
             />
           </div>
           <div className="flex gap-2 overflow-x-auto">
@@ -230,7 +232,7 @@ export default function CartaPage() {
                 {expandedCategories.has(category.id) ? <ChevronDown size={16} className="text-slate-400" /> : <ChevronRight size={16} className="text-slate-400" />}
                 <span className="text-lg">{category.icon}</span>
                 <h3 className="font-bold text-slate-800 text-sm">{category.name}</h3>
-                <span className="text-xs text-slate-400 bg-slate-200 px-2 py-0.5 rounded-full">{catItems.length}</span>
+                <span className="text-[10px] font-bold text-slate-400 bg-slate-200 px-2 py-0.5 rounded-md">{catItems.length}</span>
               </div>
               <button
                 onClick={e => { e.stopPropagation(); handleDeleteCategory(category.id) }}
@@ -291,7 +293,7 @@ export default function CartaPage() {
             </p>
             <button
               onClick={() => { setEditingItem(null); setModalOpen(true) }}
-              className="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30"
+              className="bg-orange-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-orange-600 transition-colors shadow-sm"
             >
               {t.carta.addDish}
             </button>
@@ -318,9 +320,9 @@ function ItemRow({ item, onEdit, onDelete, onToggle, formatPrice }: {
       <div className="text-slate-200 cursor-grab"><GripVertical size={16} /></div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="font-bold text-sm text-slate-800 truncate">{item.name}</p>
+          <p className="font-semibold text-sm text-slate-800 truncate">{item.name}</p>
           {item.featured && <Star size={14} className="text-orange-400 fill-orange-400 shrink-0" />}
-          {!item.available && <span className="text-[10px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded">Oculto</span>}
+          {!item.available && <span className="text-[10px] font-bold bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-md">Oculto</span>}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           {item.description && <p className="text-xs text-slate-400 truncate max-w-xs">{item.description}</p>}
@@ -342,7 +344,7 @@ function ItemRow({ item, onEdit, onDelete, onToggle, formatPrice }: {
           )}
         </div>
       </div>
-      <p className="font-black text-slate-900 text-sm whitespace-nowrap">{formatPrice(Number(item.price))}</p>
+      <p className="font-bold tabular-nums text-slate-900 text-sm whitespace-nowrap">{formatPrice(Number(item.price))}</p>
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button onClick={onToggle} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors" title={item.available ? 'Ocultar' : 'Mostrar'}>
           {item.available ? <Eye size={15} /> : <EyeOff size={15} />}

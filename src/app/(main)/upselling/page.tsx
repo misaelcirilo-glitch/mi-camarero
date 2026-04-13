@@ -19,7 +19,7 @@ interface TimeHighlight {
 
 const TYPES = [
   { id: 'complement', label: 'Complemento', icon: Plus, desc: 'Sugerir algo que acompane', color: 'text-blue-600' },
-  { id: 'upgrade', label: 'Mejora', icon: TrendingUp, desc: 'Mejorar lo que pidio', color: 'text-green-600' },
+  { id: 'upgrade', label: 'Mejora', icon: TrendingUp, desc: 'Mejorar lo que pidio', color: 'text-emerald-600' },
   { id: 'combo', label: 'Combo', icon: Gift, desc: 'Oferta especial juntos', color: 'text-purple-600' },
 ]
 
@@ -121,8 +121,11 @@ export default function UpsellingPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <Sparkles className="text-purple-500" size={24} /> {t.upselling.title}
+          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <span className="w-10 h-10 bg-purple-50 ring-1 ring-purple-100 rounded-xl flex items-center justify-center">
+              <Sparkles className="text-purple-500" size={20} />
+            </span>
+            {t.upselling.title}
           </h1>
           <p className="text-sm text-slate-500 mt-1">{t.upselling.subtitle}</p>
         </div>
@@ -131,25 +134,25 @@ export default function UpsellingPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <p className="text-xs font-bold text-slate-400 uppercase">{t.upselling.active}</p>
-          <p className="text-2xl font-black text-purple-600 mt-1">{rules.filter(r => r.active).length}</p>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t.upselling.active}</p>
+          <p className="text-2xl font-bold tabular-nums text-purple-600 mt-1">{rules.filter(r => r.active).length}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <p className="text-xs font-bold text-slate-400 uppercase">Highlights</p>
-          <p className="text-2xl font-black text-orange-600 mt-1">{highlights.length}</p>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Highlights</p>
+          <p className="text-2xl font-bold tabular-nums text-orange-600 mt-1">{highlights.length}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <p className="text-xs font-bold text-slate-400 uppercase">{t.carta.title}</p>
-          <p className="text-2xl font-black text-slate-700 mt-1">{menuItems.length}</p>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{t.carta.title}</p>
+          <p className="text-2xl font-bold tabular-nums text-slate-700 mt-1">{menuItems.length}</p>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2">
-        <button onClick={() => setTab('rules')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === 'rules' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30' : 'bg-white text-slate-600 border border-slate-200'}`}>
+        <button onClick={() => setTab('rules')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${tab === 'rules' ? 'bg-orange-500 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}>
           <Zap size={14} className="inline mr-1.5" /> {t.upselling.title}
         </button>
-        <button onClick={() => setTab('highlights')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === 'highlights' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-white text-slate-600 border border-slate-200'}`}>
+        <button onClick={() => setTab('highlights')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${tab === 'highlights' ? 'bg-orange-500 text-white shadow-sm' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}`}>
           <Clock size={14} className="inline mr-1.5" /> Highlights
         </button>
       </div>
@@ -157,7 +160,7 @@ export default function UpsellingPage() {
       {/* RULES TAB */}
       {tab === 'rules' && (
         <div className="space-y-4">
-          <button onClick={() => setShowRuleForm(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/30">
+          <button onClick={() => setShowRuleForm(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-sm">
             <Plus size={16} /> {t.upselling.addRule}
           </button>
 
@@ -165,17 +168,17 @@ export default function UpsellingPage() {
             <form onSubmit={handleCreateRule} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.upselling.when}...</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t.upselling.when}...</label>
                   <select required value={ruleForm.trigger_item_id} onChange={e => setRuleForm(p => ({ ...p, trigger_item_id: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200">
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500">
                     <option value="">Seleccionar plato</option>
                     {menuItems.map(i => <option key={i.id} value={i.id}>{i.name} ({formatPrice(Number(i.price))})</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.upselling.suggest}...</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{t.upselling.suggest}...</label>
                   <select required value={ruleForm.suggest_item_id} onChange={e => setRuleForm(p => ({ ...p, suggest_item_id: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200">
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500">
                     <option value="">Seleccionar plato</option>
                     {menuItems.filter(i => i.id !== ruleForm.trigger_item_id).map(i => <option key={i.id} value={i.id}>{i.name} ({formatPrice(Number(i.price))})</option>)}
                   </select>
@@ -184,28 +187,28 @@ export default function UpsellingPage() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Tipo</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tipo</label>
                   <select value={ruleForm.type} onChange={e => setRuleForm(p => ({ ...p, type: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200">
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500">
                     {TYPES.map(tp => <option key={tp.id} value={tp.id}>{tp.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Descuento %</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Descuento %</label>
                   <input type="number" min="0" max="100" value={ruleForm.discount_percent}
                     onChange={e => setRuleForm(p => ({ ...p, discount_percent: parseInt(e.target.value) || 0 }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200" />
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Mensaje</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Mensaje</label>
                   <input type="text" value={ruleForm.message} placeholder="Acompana con..."
                     onChange={e => setRuleForm(p => ({ ...p, message: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200" />
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500" />
                 </div>
               </div>
 
               <div className="flex gap-2">
-                <button type="submit" disabled={savingRule} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50">
+                <button type="submit" disabled={savingRule} className="px-6 py-2.5 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 shadow-sm transition-colors">
                   {savingRule ? t.common.loading : t.common.save}
                 </button>
                 <button type="button" onClick={() => setShowRuleForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">{t.common.cancel}</button>
@@ -224,18 +227,18 @@ export default function UpsellingPage() {
               {rules.map(rule => {
                 const typeInfo = TYPES.find(tp => tp.id === rule.type)
                 return (
-                  <div key={rule.id} className={`bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex items-center gap-4 ${!rule.active ? 'opacity-50' : ''}`}>
+                  <div key={rule.id} className={`bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-center gap-4 ${!rule.active ? 'opacity-50' : ''}`}>
                     <div className="flex-1 flex items-center gap-3 min-w-0">
-                      <span className="text-sm font-bold text-slate-800 truncate">{rule.trigger_name}</span>
+                      <span className="text-sm font-semibold text-slate-800 truncate">{rule.trigger_name}</span>
                       <ArrowRight size={14} className="text-slate-300 shrink-0" />
-                      <span className="text-sm font-bold text-purple-700 truncate">{rule.suggest_name}</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 ${typeInfo?.color || 'text-slate-600'}`}>{typeInfo?.label}</span>
-                      {rule.discount_percent > 0 && <span className="text-[10px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">-{rule.discount_percent}%</span>}
+                      <span className="text-sm font-semibold text-purple-700 truncate">{rule.suggest_name}</span>
+                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-md border border-slate-200 bg-slate-50 ${typeInfo?.color || 'text-slate-600'}`}>{typeInfo?.label}</span>
+                      {rule.discount_percent > 0 && <span className="text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-md">-{rule.discount_percent}%</span>}
                       {rule.message && <span className="text-xs text-slate-400 italic truncate hidden lg:block">"{rule.message}"</span>}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <button onClick={() => handleToggleRule(rule.id, rule.active)} className="text-slate-400 hover:text-purple-600 transition-colors">
-                        {rule.active ? <ToggleRight size={22} className="text-purple-600" /> : <ToggleLeft size={22} />}
+                      <button onClick={() => handleToggleRule(rule.id, rule.active)} className="text-slate-400 hover:text-orange-600 transition-colors">
+                        {rule.active ? <ToggleRight size={22} className="text-orange-500" /> : <ToggleLeft size={22} />}
                       </button>
                       <button onClick={() => handleDeleteRule(rule.id)} className="text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={15} /></button>
                     </div>
@@ -250,27 +253,27 @@ export default function UpsellingPage() {
       {/* HIGHLIGHTS TAB */}
       {tab === 'highlights' && (
         <div className="space-y-4">
-          <button onClick={() => setShowHighlightForm(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30">
+          <button onClick={() => setShowHighlightForm(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-sm">
             <Plus size={16} /> {t.common.add}
           </button>
 
           {showHighlightForm && (
             <form onSubmit={handleCreateHighlight} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Plato a destacar</label>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Plato a destacar</label>
                 <select required value={hlForm.menu_item_id} onChange={e => setHlForm(p => ({ ...p, menu_item_id: e.target.value }))}
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
+                  className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500">
                   <option value="">Seleccionar plato</option>
                   {menuItems.map(i => <option key={i.id} value={i.id}>{i.name} ({formatPrice(Number(i.price))})</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Dias</label>
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Dias</label>
                 <div className="flex gap-2">
                   {DAYS.map((d, i) => (
                     <button key={i} type="button" onClick={() => toggleDay(i)}
-                      className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${hlForm.day_of_week.includes(i) ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                      className={`w-10 h-10 rounded-lg text-xs font-bold transition-all ${hlForm.day_of_week.includes(i) ? 'bg-orange-500 text-white shadow-sm' : 'bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100'}`}>
                       {d}
                     </button>
                   ))}
@@ -279,25 +282,25 @@ export default function UpsellingPage() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Desde</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Desde</label>
                   <input type="time" value={hlForm.start_hour} onChange={e => setHlForm(p => ({ ...p, start_hour: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200" />
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Hasta</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Hasta</label>
                   <input type="time" value={hlForm.end_hour} onChange={e => setHlForm(p => ({ ...p, end_hour: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200" />
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Etiqueta</label>
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Etiqueta</label>
                   <input type="text" value={hlForm.label} placeholder="Happy Hour, Menu del dia..."
                     onChange={e => setHlForm(p => ({ ...p, label: e.target.value }))}
-                    className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200" />
+                    className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500" />
                 </div>
               </div>
 
               <div className="flex gap-2">
-                <button type="submit" disabled={savingHl} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50">
+                <button type="submit" disabled={savingHl} className="px-6 py-2.5 rounded-lg text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 shadow-sm transition-colors">
                   {savingHl ? t.common.loading : t.common.save}
                 </button>
                 <button type="button" onClick={() => setShowHighlightForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">{t.common.cancel}</button>
@@ -314,19 +317,19 @@ export default function UpsellingPage() {
           ) : (
             <div className="space-y-2">
               {highlights.map(hl => (
-                <div key={hl.id} className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex items-center gap-4">
-                  <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center shrink-0">
+                <div key={hl.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-center gap-4">
+                  <div className="w-10 h-10 bg-orange-50 ring-1 ring-orange-100 rounded-xl flex items-center justify-center shrink-0">
                     <Star size={18} className="text-orange-500" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm text-slate-800">{hl.item_name}</p>
+                    <p className="font-semibold text-sm text-slate-800">{hl.item_name}</p>
                     <div className="flex items-center gap-2 text-xs text-slate-400">
                       <span>{hl.start_hour} - {hl.end_hour}</span>
-                      <span className="flex gap-0.5">{hl.day_of_week.map(d => <span key={d} className="bg-slate-100 px-1 rounded text-[9px] font-bold">{DAYS[d]}</span>)}</span>
+                      <span className="flex gap-0.5">{hl.day_of_week.map(d => <span key={d} className="bg-slate-50 border border-slate-200 px-1 rounded text-[9px] font-bold">{DAYS[d]}</span>)}</span>
                       {hl.label && <span className="text-orange-500 font-medium">{hl.label}</span>}
                     </div>
                   </div>
-                  <span className="font-bold text-sm text-slate-700 shrink-0">{formatPrice(Number(hl.item_price))}</span>
+                  <span className="font-bold tabular-nums text-sm text-slate-700 shrink-0">{formatPrice(Number(hl.item_price))}</span>
                   <button onClick={() => handleDeleteHighlight(hl.id)} className="text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={15} /></button>
                 </div>
               ))}
