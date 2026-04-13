@@ -7,16 +7,18 @@ import {
   ChefHat, Users, Settings, LogOut, Crown, ChevronLeft, ChevronRight, Sparkles
 } from 'lucide-react'
 import { useState } from 'react'
+import { useI18n } from '@/shared/lib/i18n'
+import { LocaleSwitcher } from '@/shared/components/LocaleSwitcher'
 
-const NAV_ITEMS = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/carta', label: 'Carta', icon: UtensilsCrossed },
-  { href: '/pedidos', label: 'Pedidos', icon: ClipboardList },
-  { href: '/mesas', label: 'Mesas', icon: Grid3X3 },
-  { href: '/cocina', label: 'Cocina', icon: ChefHat },
-  { href: '/upselling', label: 'Upselling', icon: Sparkles },
-  { href: '/clientes', label: 'Clientes', icon: Users },
-  { href: '/config', label: 'Ajustes', icon: Settings },
+const NAV_KEYS = [
+  { href: '/', key: 'dashboard' as const, icon: LayoutDashboard },
+  { href: '/carta', key: 'menu' as const, icon: UtensilsCrossed },
+  { href: '/pedidos', key: 'orders' as const, icon: ClipboardList },
+  { href: '/mesas', key: 'tables' as const, icon: Grid3X3 },
+  { href: '/cocina', key: 'kitchen' as const, icon: ChefHat },
+  { href: '/upselling', key: 'upselling' as const, icon: Sparkles },
+  { href: '/clientes', key: 'customers' as const, icon: Users },
+  { href: '/config', key: 'settings' as const, icon: Settings },
 ]
 
 interface SidebarProps {
@@ -28,6 +30,7 @@ interface SidebarProps {
 export default function Sidebar({ user, tenant, plan }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const { t } = useI18n()
   const [collapsed, setCollapsed] = useState(false)
 
   const handleLogout = async () => {
@@ -57,7 +60,7 @@ export default function Sidebar({ user, tenant, plan }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 py-4 space-y-1 px-3">
-        {NAV_ITEMS.map(item => {
+        {NAV_KEYS.map(item => {
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
           return (
             <Link
@@ -70,27 +73,32 @@ export default function Sidebar({ user, tenant, plan }: SidebarProps) {
               }`}
             >
               <item.icon size={20} className="shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
+              {!collapsed && <span>{t.nav[item.key]}</span>}
             </Link>
           )
         })}
       </nav>
 
-      {/* User + Collapse */}
+      {/* User + Locale + Collapse */}
       <div className="p-4 border-t border-slate-700/50 space-y-3">
         {!collapsed && (
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-xs font-bold">
-              {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+          <>
+            <div className="mb-2">
+              <LocaleSwitcher variant="dark" />
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium truncate">{user.name}</p>
-              <p className="text-[10px] text-slate-500 uppercase tracking-widest">{user.role}</p>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-slate-700 rounded-lg flex items-center justify-center text-xs font-bold">
+                {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium truncate">{user.name}</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">{user.role}</p>
+              </div>
+              <button onClick={handleLogout} className="text-slate-500 hover:text-red-400 transition-colors">
+                <LogOut size={16} />
+              </button>
             </div>
-            <button onClick={handleLogout} className="text-slate-500 hover:text-red-400 transition-colors">
-              <LogOut size={16} />
-            </button>
-          </div>
+          </>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}

@@ -5,8 +5,10 @@ import { useSearchParams } from 'next/navigation'
 import { Crown, Check, Loader2, ExternalLink, Sparkles } from 'lucide-react'
 import { PLAN_FEATURES, PLAN_PRICES } from '@/shared/lib/plans'
 import { Suspense } from 'react'
+import { useI18n } from '@/shared/lib/i18n'
 
 function PlanesContent() {
+  const { t, formatPrice } = useI18n()
   const searchParams = useSearchParams()
   const success = searchParams.get('success')
   const canceled = searchParams.get('canceled')
@@ -52,8 +54,8 @@ function PlanesContent() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-black text-slate-900 flex items-center justify-center gap-2"><Crown className="text-orange-500" size={24} /> Planes y precios</h1>
-        <p className="text-sm text-slate-500 mt-1">Elige el plan que mejor se adapte a tu restaurante</p>
+        <h1 className="text-2xl font-black text-slate-900 flex items-center justify-center gap-2"><Crown className="text-orange-500" size={24} /> {t.planes.title}</h1>
+        <p className="text-sm text-slate-500 mt-1">{t.planes.subtitle}</p>
       </div>
 
       {success && <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl p-4 text-center text-sm font-bold">Suscripcion activada! Tu plan ha sido actualizado.</div>}
@@ -82,7 +84,7 @@ function PlanesContent() {
             <div key={plan} className={`rounded-2xl border-2 ${colors.border} ${colors.bg} p-6 relative ${isPopular ? 'ring-2 ring-orange-400/50' : ''}`}>
               {isPopular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                  <Sparkles size={12} /> Mas popular
+                  <Sparkles size={12} /> {t.landing.mostPopular}
                 </div>
               )}
 
@@ -90,7 +92,7 @@ function PlanesContent() {
                 <span className={`text-xs font-bold px-2 py-1 rounded-full ${colors.badge} uppercase tracking-wide`}>{plan}</span>
                 <div className="mt-3">
                   <span className="text-4xl font-black text-slate-900">{billing === 'yearly' ? (price.yearly / 12).toFixed(0) : price.monthly}</span>
-                  <span className="text-sm text-slate-500"> EUR/mes</span>
+                  <span className="text-sm text-slate-500"> EUR{t.planes.perMonth}</span>
                 </div>
                 {billing === 'yearly' && <p className="text-xs text-green-600 font-bold mt-1">{price.yearly} EUR/ano (ahorras {price.monthly * 12 - price.yearly} EUR)</p>}
               </div>
@@ -106,13 +108,13 @@ function PlanesContent() {
 
               {isCurrent ? (
                 <button onClick={handlePortal} className="w-full py-3 rounded-xl font-bold text-sm border-2 border-slate-300 text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-2 transition-colors">
-                  {subscriptionStatus === 'active' ? <><ExternalLink size={14} /> Gestionar suscripcion</> : 'Plan actual'}
+                  {subscriptionStatus === 'active' ? <><ExternalLink size={14} /> {t.planes.manageSub}</> : t.planes.currentPlan}
                 </button>
               ) : (
                 <button onClick={() => handleSubscribe(plan)} disabled={loading === plan}
                   className={`w-full py-3 rounded-xl font-bold text-sm text-white transition-colors flex items-center justify-center gap-2 ${colors.btn} disabled:opacity-50`}>
                   {loading === plan ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
-                  {loading === plan ? 'Redirigiendo...' : `Elegir ${plan}`}
+                  {loading === plan ? t.common.loading : `${t.planes.selectPlan} ${plan}`}
                 </button>
               )}
             </div>

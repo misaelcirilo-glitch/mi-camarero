@@ -5,6 +5,7 @@ import {
   ClipboardList, Clock, CheckCircle, ChefHat, Loader2,
   CreditCard, XCircle, RefreshCw, Utensils
 } from 'lucide-react'
+import { useI18n } from '@/shared/lib/i18n'
 
 interface OrderItem {
   id: string
@@ -32,26 +33,6 @@ interface Order {
   items: OrderItem[]
 }
 
-const STATUSES = [
-  { id: 'active', label: 'Activos' },
-  { id: 'pending', label: 'Pendientes' },
-  { id: 'confirmed', label: 'Confirmados' },
-  { id: 'preparing', label: 'Preparando' },
-  { id: 'ready', label: 'Listos' },
-  { id: 'served', label: 'Servidos' },
-  { id: 'paid', label: 'Pagados' },
-]
-
-const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string; icon: React.ElementType }> = {
-  pending: { bg: 'bg-yellow-50 border-yellow-200', text: 'text-yellow-700', label: 'Pendiente', icon: Clock },
-  confirmed: { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', label: 'Confirmado', icon: CheckCircle },
-  preparing: { bg: 'bg-orange-50 border-orange-200', text: 'text-orange-700', label: 'Preparando', icon: ChefHat },
-  ready: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', label: 'Listo', icon: Utensils },
-  served: { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', label: 'Servido', icon: CheckCircle },
-  paid: { bg: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700', label: 'Pagado', icon: CreditCard },
-  cancelled: { bg: 'bg-red-50 border-red-200', text: 'text-red-700', label: 'Cancelado', icon: XCircle },
-}
-
 const NEXT_STATUS: Record<string, string> = {
   pending: 'confirmed',
   confirmed: 'preparing',
@@ -61,10 +42,31 @@ const NEXT_STATUS: Record<string, string> = {
 }
 
 export default function PedidosPage() {
+  const { t, formatPrice, locale } = useI18n()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('active')
   const [refreshing, setRefreshing] = useState(false)
+
+  const STATUS_CONFIG: Record<string, { bg: string; text: string; label: string; icon: React.ElementType }> = {
+    pending: { bg: 'bg-yellow-50 border-yellow-200', text: 'text-yellow-700', label: t.dashboard.status.pending, icon: Clock },
+    confirmed: { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', label: t.dashboard.status.confirmed, icon: CheckCircle },
+    preparing: { bg: 'bg-orange-50 border-orange-200', text: 'text-orange-700', label: t.dashboard.status.preparing, icon: ChefHat },
+    ready: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', label: t.dashboard.status.ready, icon: Utensils },
+    served: { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', label: t.dashboard.status.served, icon: CheckCircle },
+    paid: { bg: 'bg-emerald-50 border-emerald-200', text: 'text-emerald-700', label: t.dashboard.status.paid, icon: CreditCard },
+    cancelled: { bg: 'bg-red-50 border-red-200', text: 'text-red-700', label: t.dashboard.status.cancelled, icon: XCircle },
+  }
+
+  const STATUSES = [
+    { id: 'active', label: t.pedidos.all },
+    { id: 'pending', label: t.dashboard.status.pending },
+    { id: 'confirmed', label: t.dashboard.status.confirmed },
+    { id: 'preparing', label: t.dashboard.status.preparing },
+    { id: 'ready', label: t.dashboard.status.ready },
+    { id: 'served', label: t.dashboard.status.served },
+    { id: 'paid', label: t.dashboard.status.paid },
+  ]
 
   const loadOrders = useCallback(async () => {
     const res = await fetch(`/api/pedidos?status=${filter}`).then(r => r.json())
@@ -99,7 +101,7 @@ export default function PedidosPage() {
   }
 
   const handleCancel = async (orderId: string) => {
-    if (!confirm('Cancelar este pedido?')) return
+    if (!confirm(t.pedidos.cancelOrder + '?')) return
     await fetch(`/api/pedidos/${orderId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -112,7 +114,7 @@ export default function PedidosPage() {
     return (
       <div className="flex items-center justify-center py-20 gap-3 text-slate-400">
         <Loader2 size={22} className="animate-spin" />
-        <span className="text-sm font-medium">Cargando pedidos...</span>
+        <span className="text-sm font-medium">{t.common.loading}</span>
       </div>
     )
   }
@@ -123,15 +125,15 @@ export default function PedidosPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <ClipboardList className="text-blue-500" size={24} /> Pedidos
+            <ClipboardList className="text-blue-500" size={24} /> {t.pedidos.title}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">{orders.length} pedidos — actualiza cada 10s</p>
+          <p className="text-sm text-slate-500 mt-1">{t.pedidos.subtitle}</p>
         </div>
         <button
           onClick={() => { setRefreshing(true); loadOrders() }}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
         >
-          <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} /> Actualizar
+          <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} /> {t.pedidos.newOrder}
         </button>
       </div>
 
@@ -151,8 +153,8 @@ export default function PedidosPage() {
       {orders.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
           <ClipboardList size={48} className="mx-auto mb-4 text-slate-300" />
-          <h2 className="text-lg font-bold text-slate-700 mb-2">Sin pedidos</h2>
-          <p className="text-sm text-slate-400">Los pedidos de tus clientes apareceran aqui en tiempo real.</p>
+          <h2 className="text-lg font-bold text-slate-700 mb-2">{t.pedidos.noOrders}</h2>
+          <p className="text-sm text-slate-400">{t.pedidos.subtitle}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -174,12 +176,12 @@ export default function PedidosPage() {
                       </span>
                     </div>
                     <span className="text-xs text-slate-400">
-                      {new Date(order.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(order.created_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-500">
                     {order.table_name && <span className="bg-white/70 px-2 py-0.5 rounded font-bold">{order.table_name}</span>}
-                    <span className="bg-white/70 px-2 py-0.5 rounded">{order.type === 'dine_in' ? 'En sala' : order.type === 'takeaway' ? 'Para llevar' : 'Delivery'}</span>
+                    <span className="bg-white/70 px-2 py-0.5 rounded">{order.type === 'dine_in' ? t.pedidos.dineIn : order.type === 'takeaway' ? t.pedidos.takeaway : t.pedidos.deliveryLabel}</span>
                     {order.customer_name && <span>{order.customer_name}</span>}
                   </div>
                 </div>
@@ -201,7 +203,7 @@ export default function PedidosPage() {
                         {item.notes && <p className="text-[10px] text-orange-500 italic">{item.notes}</p>}
                       </div>
                       <span className="text-xs font-bold text-slate-600 shrink-0 ml-2">
-                        {(Number(item.unit_price) * item.quantity).toFixed(2)}
+                        {formatPrice(Number(item.unit_price) * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -211,8 +213,8 @@ export default function PedidosPage() {
                 {/* Footer */}
                 <div className="p-4 border-t border-slate-100/50">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs text-slate-500">Total</span>
-                    <span className="text-lg font-black text-slate-900">{Number(order.total).toFixed(2)} EUR</span>
+                    <span className="text-xs text-slate-500">{t.pedidos.total}</span>
+                    <span className="text-lg font-black text-slate-900">{formatPrice(Number(order.total))}</span>
                   </div>
                   <div className="flex gap-2">
                     {next && nextConfig && (

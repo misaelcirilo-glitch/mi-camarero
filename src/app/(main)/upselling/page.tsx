@@ -5,6 +5,7 @@ import {
   Sparkles, Plus, Trash2, Loader2, ArrowRight, Clock, Zap, TrendingUp,
   Gift, Star, ToggleLeft, ToggleRight
 } from 'lucide-react'
+import { useI18n } from '@/shared/lib/i18n'
 
 interface MenuItem { id: string; name: string; price: number; category_name?: string }
 interface UpsellRule {
@@ -25,6 +26,7 @@ const TYPES = [
 const DAYS = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab']
 
 export default function UpsellingPage() {
+  const { t, formatPrice } = useI18n()
   const [rules, setRules] = useState<UpsellRule[]>([])
   const [highlights, setHighlights] = useState<TimeHighlight[]>([])
   const [menuItems, setMenuItems] = useState<MenuItem[]>([])
@@ -79,7 +81,7 @@ export default function UpsellingPage() {
   }
 
   const handleDeleteRule = async (id: string) => {
-    if (!confirm('Eliminar esta regla?')) return
+    if (!confirm(t.common.delete + '?')) return
     await fetch(`/api/upselling/reglas/${id}`, { method: 'DELETE' })
     loadData()
   }
@@ -99,7 +101,7 @@ export default function UpsellingPage() {
   }
 
   const handleDeleteHighlight = async (id: string) => {
-    if (!confirm('Eliminar este highlight?')) return
+    if (!confirm(t.common.delete + '?')) return
     await fetch(`/api/upselling/highlights/${id}`, { method: 'DELETE' })
     loadData()
   }
@@ -112,7 +114,7 @@ export default function UpsellingPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center py-20 gap-3 text-slate-400"><Loader2 size={22} className="animate-spin" /><span className="text-sm font-medium">Cargando...</span></div>
+    return <div className="flex items-center justify-center py-20 gap-3 text-slate-400"><Loader2 size={22} className="animate-spin" /><span className="text-sm font-medium">{t.common.loading}</span></div>
   }
 
   return (
@@ -120,24 +122,24 @@ export default function UpsellingPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <Sparkles className="text-purple-500" size={24} /> Upselling inteligente
+            <Sparkles className="text-purple-500" size={24} /> {t.upselling.title}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">Configura sugerencias automaticas para aumentar el ticket medio</p>
+          <p className="text-sm text-slate-500 mt-1">{t.upselling.subtitle}</p>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <p className="text-xs font-bold text-slate-400 uppercase">Reglas activas</p>
+          <p className="text-xs font-bold text-slate-400 uppercase">{t.upselling.active}</p>
           <p className="text-2xl font-black text-purple-600 mt-1">{rules.filter(r => r.active).length}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <p className="text-xs font-bold text-slate-400 uppercase">Highlights horarios</p>
+          <p className="text-xs font-bold text-slate-400 uppercase">Highlights</p>
           <p className="text-2xl font-black text-orange-600 mt-1">{highlights.length}</p>
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-          <p className="text-xs font-bold text-slate-400 uppercase">Platos en carta</p>
+          <p className="text-xs font-bold text-slate-400 uppercase">{t.carta.title}</p>
           <p className="text-2xl font-black text-slate-700 mt-1">{menuItems.length}</p>
         </div>
       </div>
@@ -145,10 +147,10 @@ export default function UpsellingPage() {
       {/* Tabs */}
       <div className="flex gap-2">
         <button onClick={() => setTab('rules')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === 'rules' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30' : 'bg-white text-slate-600 border border-slate-200'}`}>
-          <Zap size={14} className="inline mr-1.5" /> Reglas de upselling
+          <Zap size={14} className="inline mr-1.5" /> {t.upselling.title}
         </button>
         <button onClick={() => setTab('highlights')} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === 'highlights' ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-white text-slate-600 border border-slate-200'}`}>
-          <Clock size={14} className="inline mr-1.5" /> Highlights por horario
+          <Clock size={14} className="inline mr-1.5" /> Highlights
         </button>
       </div>
 
@@ -156,26 +158,26 @@ export default function UpsellingPage() {
       {tab === 'rules' && (
         <div className="space-y-4">
           <button onClick={() => setShowRuleForm(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/30">
-            <Plus size={16} /> Nueva regla
+            <Plus size={16} /> {t.upselling.addRule}
           </button>
 
           {showRuleForm && (
             <form onSubmit={handleCreateRule} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Cuando pida...</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.upselling.when}...</label>
                   <select required value={ruleForm.trigger_item_id} onChange={e => setRuleForm(p => ({ ...p, trigger_item_id: e.target.value }))}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200">
                     <option value="">Seleccionar plato</option>
-                    {menuItems.map(i => <option key={i.id} value={i.id}>{i.name} ({Number(i.price).toFixed(2)} EUR)</option>)}
+                    {menuItems.map(i => <option key={i.id} value={i.id}>{i.name} ({formatPrice(Number(i.price))})</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Sugerir...</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.upselling.suggest}...</label>
                   <select required value={ruleForm.suggest_item_id} onChange={e => setRuleForm(p => ({ ...p, suggest_item_id: e.target.value }))}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200">
                     <option value="">Seleccionar plato</option>
-                    {menuItems.filter(i => i.id !== ruleForm.trigger_item_id).map(i => <option key={i.id} value={i.id}>{i.name} ({Number(i.price).toFixed(2)} EUR)</option>)}
+                    {menuItems.filter(i => i.id !== ruleForm.trigger_item_id).map(i => <option key={i.id} value={i.id}>{i.name} ({formatPrice(Number(i.price))})</option>)}
                   </select>
                 </div>
               </div>
@@ -185,7 +187,7 @@ export default function UpsellingPage() {
                   <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Tipo</label>
                   <select value={ruleForm.type} onChange={e => setRuleForm(p => ({ ...p, type: e.target.value }))}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-200">
-                    {TYPES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+                    {TYPES.map(tp => <option key={tp.id} value={tp.id}>{tp.label}</option>)}
                   </select>
                 </div>
                 <div>
@@ -204,9 +206,9 @@ export default function UpsellingPage() {
 
               <div className="flex gap-2">
                 <button type="submit" disabled={savingRule} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50">
-                  {savingRule ? 'Creando...' : 'Crear regla'}
+                  {savingRule ? t.common.loading : t.common.save}
                 </button>
-                <button type="button" onClick={() => setShowRuleForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">Cancelar</button>
+                <button type="button" onClick={() => setShowRuleForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">{t.common.cancel}</button>
               </div>
             </form>
           )}
@@ -214,13 +216,13 @@ export default function UpsellingPage() {
           {rules.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
               <Zap size={48} className="mx-auto mb-4 text-slate-300" />
-              <h2 className="text-lg font-bold text-slate-700 mb-2">Sin reglas de upselling</h2>
-              <p className="text-sm text-slate-400 max-w-md mx-auto">Crea reglas como: "Si pide hamburguesa, sugerir patatas fritas" o "Si pide pizza, ofrecer combo con bebida".</p>
+              <h2 className="text-lg font-bold text-slate-700 mb-2">{t.upselling.noRules}</h2>
+              <p className="text-sm text-slate-400 max-w-md mx-auto">{t.upselling.subtitle}</p>
             </div>
           ) : (
             <div className="space-y-2">
               {rules.map(rule => {
-                const typeInfo = TYPES.find(t => t.id === rule.type)
+                const typeInfo = TYPES.find(tp => tp.id === rule.type)
                 return (
                   <div key={rule.id} className={`bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex items-center gap-4 ${!rule.active ? 'opacity-50' : ''}`}>
                     <div className="flex-1 flex items-center gap-3 min-w-0">
@@ -249,7 +251,7 @@ export default function UpsellingPage() {
       {tab === 'highlights' && (
         <div className="space-y-4">
           <button onClick={() => setShowHighlightForm(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30">
-            <Plus size={16} /> Nuevo highlight
+            <Plus size={16} /> {t.common.add}
           </button>
 
           {showHighlightForm && (
@@ -259,7 +261,7 @@ export default function UpsellingPage() {
                 <select required value={hlForm.menu_item_id} onChange={e => setHlForm(p => ({ ...p, menu_item_id: e.target.value }))}
                   className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
                   <option value="">Seleccionar plato</option>
-                  {menuItems.map(i => <option key={i.id} value={i.id}>{i.name} ({Number(i.price).toFixed(2)} EUR)</option>)}
+                  {menuItems.map(i => <option key={i.id} value={i.id}>{i.name} ({formatPrice(Number(i.price))})</option>)}
                 </select>
               </div>
 
@@ -296,9 +298,9 @@ export default function UpsellingPage() {
 
               <div className="flex gap-2">
                 <button type="submit" disabled={savingHl} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50">
-                  {savingHl ? 'Creando...' : 'Crear highlight'}
+                  {savingHl ? t.common.loading : t.common.save}
                 </button>
-                <button type="button" onClick={() => setShowHighlightForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">Cancelar</button>
+                <button type="button" onClick={() => setShowHighlightForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">{t.common.cancel}</button>
               </div>
             </form>
           )}
@@ -306,8 +308,8 @@ export default function UpsellingPage() {
           {highlights.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
               <Clock size={48} className="mx-auto mb-4 text-slate-300" />
-              <h2 className="text-lg font-bold text-slate-700 mb-2">Sin highlights horarios</h2>
-              <p className="text-sm text-slate-400 max-w-md mx-auto">Destaca platos en horarios especificos: menu del dia de 12:00 a 16:00, happy hour de 18:00 a 20:00, etc.</p>
+              <h2 className="text-lg font-bold text-slate-700 mb-2">{t.upselling.noRules}</h2>
+              <p className="text-sm text-slate-400 max-w-md mx-auto">{t.upselling.subtitle}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -324,7 +326,7 @@ export default function UpsellingPage() {
                       {hl.label && <span className="text-orange-500 font-medium">{hl.label}</span>}
                     </div>
                   </div>
-                  <span className="font-bold text-sm text-slate-700 shrink-0">{Number(hl.item_price).toFixed(2)} EUR</span>
+                  <span className="font-bold text-sm text-slate-700 shrink-0">{formatPrice(Number(hl.item_price))}</span>
                   <button onClick={() => handleDeleteHighlight(hl.id)} className="text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={15} /></button>
                 </div>
               ))}

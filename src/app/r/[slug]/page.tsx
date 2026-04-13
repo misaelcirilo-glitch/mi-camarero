@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { use } from 'react'
 import { Search, Star, Clock, ChevronRight, Flame, Loader2, Phone } from 'lucide-react'
+import { useI18n } from '@/shared/lib/i18n'
 
 interface Restaurant {
   name: string
@@ -51,6 +52,7 @@ const TAG_STYLES: Record<string, string> = {
 
 export default function PublicMenuPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
+  const { t } = useI18n()
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [items, setItems] = useState<Item[]>([])
@@ -133,7 +135,7 @@ export default function PublicMenuPage({ params }: { params: Promise<{ slug: str
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text" value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Buscar en la carta..."
+              placeholder={t.publicMenu.search}
               className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
             />
           </div>
@@ -170,7 +172,7 @@ export default function PublicMenuPage({ params }: { params: Promise<{ slug: str
         {featured.length > 0 && !activeCategory && (
           <div>
             <h2 className="flex items-center gap-2 text-sm font-bold text-slate-800 mb-3">
-              <Flame size={16} className="text-orange-500" /> Destacados
+              <Flame size={16} className="text-orange-500" /> {t.publicMenu.featured}
             </h2>
             <div className="space-y-3">
               {featured.map(item => <MenuCard key={item.id} item={item} currency={restaurant.currency} />)}
@@ -193,7 +195,7 @@ export default function PublicMenuPage({ params }: { params: Promise<{ slug: str
 
         {filtered.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-slate-400 text-sm">No se encontraron platos</p>
+            <p className="text-slate-400 text-sm">{t.publicMenu.noResults}</p>
           </div>
         )}
       </div>
@@ -202,14 +204,14 @@ export default function PublicMenuPage({ params }: { params: Promise<{ slug: str
       <div className="max-w-lg mx-auto px-4 pb-4">
         <a href={`/r/${slug}/pedido-online`}
           className="block bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl p-4 text-center shadow-lg shadow-orange-500/30 hover:shadow-xl transition-all">
-          <p className="font-bold">Pedir para llevar o a domicilio</p>
-          <p className="text-xs text-orange-100 mt-0.5">Sin comisiones — Directamente con nosotros</p>
+          <p className="font-bold">{t.publicMenu.orderOnline}</p>
+          <p className="text-xs text-orange-100 mt-0.5">{t.landing.tagline}</p>
         </a>
       </div>
 
       {/* Powered by */}
       <div className="text-center py-4">
-        <p className="text-[10px] text-slate-300 uppercase tracking-widest">Powered by Mi Camarero</p>
+        <p className="text-[10px] text-slate-300 uppercase tracking-widest">{t.publicMenu.poweredBy}</p>
       </div>
     </div>
   )

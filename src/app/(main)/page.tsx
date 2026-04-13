@@ -6,6 +6,7 @@ import {
   UtensilsCrossed, Clock, ArrowRight
 } from 'lucide-react'
 import Link from 'next/link'
+import { useI18n } from '@/shared/lib/i18n'
 
 interface DashboardData {
   stats: {
@@ -28,27 +29,8 @@ interface DashboardData {
   }>
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  confirmed: 'bg-blue-100 text-blue-700',
-  preparing: 'bg-orange-100 text-orange-700',
-  ready: 'bg-green-100 text-green-700',
-  served: 'bg-slate-100 text-slate-600',
-  paid: 'bg-emerald-100 text-emerald-700',
-  cancelled: 'bg-red-100 text-red-700',
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: 'Pendiente',
-  confirmed: 'Confirmado',
-  preparing: 'Preparando',
-  ready: 'Listo',
-  served: 'Servido',
-  paid: 'Pagado',
-  cancelled: 'Cancelado',
-}
-
 export default function DashboardPage() {
+  const { t, formatPrice, locale } = useI18n()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -73,23 +55,24 @@ export default function DashboardPage() {
   }
 
   const s = data?.stats
+  const statusLabels = t.dashboard.status as Record<string, string>
 
   const cards = [
-    { label: 'Pedidos hoy', value: s?.ordersToday || 0, icon: ClipboardList, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { label: 'Facturado hoy', value: `${(s?.revenueToday || 0).toFixed(2)} EUR`, icon: Euro, color: 'text-green-600', bg: 'bg-green-50' },
-    { label: 'Pedidos activos', value: s?.activeOrders || 0, icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50' },
-    { label: 'Mesas ocupadas', value: `${s?.tablesOccupied || 0} / ${s?.tablesTotal || 0}`, icon: Grid3X3, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { label: t.dashboard.ordersToday, value: s?.ordersToday || 0, icon: ClipboardList, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: t.dashboard.revenueToday, value: formatPrice(s?.revenueToday || 0), icon: Euro, color: 'text-green-600', bg: 'bg-green-50' },
+    { label: t.dashboard.activeOrders, value: s?.activeOrders || 0, icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { label: t.dashboard.tablesOccupied, value: `${s?.tablesOccupied || 0} / ${s?.tablesTotal || 0}`, icon: Grid3X3, color: 'text-purple-600', bg: 'bg-purple-50' },
   ]
+
+  const dateLocales: Record<string, string> = { es: 'es-ES', en: 'en-US', pt: 'pt-BR' }
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-slate-900">Dashboard</h1>
-        <p className="text-sm text-slate-500 mt-1">Vista general de tu restaurante hoy</p>
+        <h1 className="text-2xl font-black text-slate-900">{t.dashboard.title}</h1>
+        <p className="text-sm text-slate-500 mt-1">{t.dashboard.subtitle}</p>
       </div>
 
-      {/* Stats cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map(card => (
           <div key={card.label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
@@ -106,16 +89,14 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Quick actions + Recent orders */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick actions */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-          <h2 className="font-bold text-slate-800 mb-4">Acciones rapidas</h2>
+          <h2 className="font-bold text-slate-800 mb-4">{t.dashboard.quickActions}</h2>
           <div className="space-y-3">
             {[
-              { href: '/carta', label: 'Gestionar carta', desc: `${s?.menuItems || 0} platos`, icon: UtensilsCrossed, color: 'bg-orange-500' },
-              { href: '/pedidos', label: 'Ver pedidos', desc: `${s?.activeOrders || 0} activos`, icon: ClipboardList, color: 'bg-blue-500' },
-              { href: '/mesas', label: 'Mapa de mesas', desc: `${s?.tablesTotal || 0} mesas`, icon: Grid3X3, color: 'bg-purple-500' },
+              { href: '/carta', label: t.dashboard.manageMenu, desc: `${s?.menuItems || 0} ${t.dashboard.dishes}`, icon: UtensilsCrossed, color: 'bg-orange-500' },
+              { href: '/pedidos', label: t.dashboard.viewOrders, desc: `${s?.activeOrders || 0} ${t.dashboard.active}`, icon: ClipboardList, color: 'bg-blue-500' },
+              { href: '/mesas', label: t.dashboard.tableMap, desc: `${s?.tablesTotal || 0} ${t.dashboard.tables}`, icon: Grid3X3, color: 'bg-purple-500' },
             ].map(action => (
               <Link
                 key={action.href}
@@ -135,12 +116,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Recent orders */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-slate-800">Pedidos recientes</h2>
+            <h2 className="font-bold text-slate-800">{t.dashboard.recentOrders}</h2>
             <Link href="/pedidos" className="text-xs font-bold text-orange-500 hover:underline">
-              Ver todos
+              {t.dashboard.viewAll}
             </Link>
           </div>
 
@@ -153,25 +133,35 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-slate-700">
-                      {order.table_name || (order.type === 'takeaway' ? 'Para llevar' : 'Delivery')}
+                      {order.table_name || (order.type === 'takeaway' ? t.dashboard.takeaway : t.dashboard.delivery)}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-slate-400">
                       <Clock size={12} />
-                      {new Date(order.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(order.created_at).toLocaleTimeString(dateLocales[locale], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
-                  <span className={`text-xs font-bold px-2 py-1 rounded-lg ${STATUS_COLORS[order.status] || 'bg-slate-100 text-slate-600'}`}>
-                    {STATUS_LABELS[order.status] || order.status}
+                  <span className={`text-xs font-bold px-2 py-1 rounded-lg ${
+                    ({
+                      pending: 'bg-yellow-100 text-yellow-700',
+                      confirmed: 'bg-blue-100 text-blue-700',
+                      preparing: 'bg-orange-100 text-orange-700',
+                      ready: 'bg-green-100 text-green-700',
+                      served: 'bg-slate-100 text-slate-600',
+                      paid: 'bg-emerald-100 text-emerald-700',
+                      cancelled: 'bg-red-100 text-red-700',
+                    } as Record<string, string>)[order.status] || 'bg-slate-100 text-slate-600'
+                  }`}>
+                    {statusLabels[order.status] || order.status}
                   </span>
-                  <span className="text-sm font-bold text-slate-700">{Number(order.total).toFixed(2)} EUR</span>
+                  <span className="text-sm font-bold text-slate-700">{formatPrice(order.total)}</span>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-12 text-slate-400">
               <ClipboardList size={40} className="mx-auto mb-3 opacity-30" />
-              <p className="text-sm font-medium">Aun no hay pedidos</p>
-              <p className="text-xs mt-1">Los pedidos apareceran aqui en tiempo real</p>
+              <p className="text-sm font-medium">{t.dashboard.noOrders}</p>
+              <p className="text-xs mt-1">{t.dashboard.noOrdersDesc}</p>
             </div>
           )}
         </div>

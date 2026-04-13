@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Grid3X3, Plus, QrCode, Users, Loader2, Copy, CheckCircle, Trash2 } from 'lucide-react'
+import { useI18n } from '@/shared/lib/i18n'
 
 interface Table {
   id: string
@@ -22,14 +23,16 @@ const ZONES = [
   { id: 'privado', label: 'Privado', icon: '🔒' },
 ]
 
-const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  free: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', label: 'Libre' },
-  occupied: { bg: 'bg-orange-50 border-orange-200', text: 'text-orange-700', label: 'Ocupada' },
-  reserved: { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', label: 'Reservada' },
-  bill_requested: { bg: 'bg-purple-50 border-purple-200', text: 'text-purple-700', label: 'Cuenta pedida' },
-}
-
 export default function MesasPage() {
+  const { t, formatPrice } = useI18n()
+
+  const STATUS_STYLES: Record<string, { bg: string; text: string; label: string }> = {
+    free: { bg: 'bg-green-50 border-green-200', text: 'text-green-700', label: t.mesas.free },
+    occupied: { bg: 'bg-orange-50 border-orange-200', text: 'text-orange-700', label: t.mesas.occupied },
+    reserved: { bg: 'bg-blue-50 border-blue-200', text: 'text-blue-700', label: t.mesas.reserved },
+    bill_requested: { bg: 'bg-purple-50 border-purple-200', text: 'text-purple-700', label: 'Cuenta pedida' },
+  }
+
   const [tables, setTables] = useState<Table[]>([])
   const [slug, setSlug] = useState('')
   const [loading, setLoading] = useState(true)
@@ -78,7 +81,7 @@ export default function MesasPage() {
     return (
       <div className="flex items-center justify-center py-20 gap-3 text-slate-400">
         <Loader2 size={22} className="animate-spin" />
-        <span className="text-sm font-medium">Cargando mesas...</span>
+        <span className="text-sm font-medium">{t.common.loading}</span>
       </div>
     )
   }
@@ -94,17 +97,17 @@ export default function MesasPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <Grid3X3 className="text-purple-500" size={24} /> Mesas
+            <Grid3X3 className="text-purple-500" size={24} /> {t.mesas.title}
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            {tables.length} mesas — {tables.filter(t => t.status === 'free').length} libres
+            {tables.length} {t.mesas.title.toLowerCase()} — {tables.filter(t => t.status === 'free').length} {t.mesas.free.toLowerCase()}
           </p>
         </div>
         <button
           onClick={() => setShowAddForm(true)}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-purple-600 text-white hover:bg-purple-700 transition-colors shadow-lg shadow-purple-600/30"
         >
-          <Plus size={16} /> Anadir mesa
+          <Plus size={16} /> {t.mesas.addTable}
         </button>
       </div>
 
@@ -112,7 +115,7 @@ export default function MesasPage() {
       {showAddForm && (
         <form onSubmit={handleAddTable} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex gap-3 items-end">
           <div className="flex-1">
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nombre</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.config.name}</label>
             <input
               type="text" value={newTable.name}
               onChange={e => setNewTable(p => ({ ...p, name: e.target.value }))}
@@ -121,7 +124,7 @@ export default function MesasPage() {
             />
           </div>
           <div className="w-24">
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Capacidad</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.mesas.capacity}</label>
             <input
               type="number" min="1" value={newTable.capacity}
               onChange={e => setNewTable(p => ({ ...p, capacity: parseInt(e.target.value) || 4 }))}
@@ -139,9 +142,9 @@ export default function MesasPage() {
             </select>
           </div>
           <button type="submit" disabled={saving} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50">
-            {saving ? 'Creando...' : 'Crear'}
+            {saving ? t.common.loading : t.common.save}
           </button>
-          <button type="button" onClick={() => setShowAddForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">Cancelar</button>
+          <button type="button" onClick={() => setShowAddForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">{t.common.cancel}</button>
         </form>
       )}
 
@@ -166,12 +169,12 @@ export default function MesasPage() {
                   </div>
                   <p className="text-xs text-slate-500 font-medium mb-1">{table.name}</p>
                   <div className="flex items-center gap-1 text-xs text-slate-400 mb-3">
-                    <Users size={12} /> {table.capacity} personas
+                    <Users size={12} /> {table.capacity} {t.mesas.persons}
                   </div>
 
                   {table.order_total && (
                     <p className="text-xs font-bold text-slate-700 mb-2">
-                      Pedido: {Number(table.order_total).toFixed(2)} EUR
+                      {t.pedidos.total}: {formatPrice(Number(table.order_total))}
                     </p>
                   )}
 
@@ -208,8 +211,8 @@ export default function MesasPage() {
       {tables.length === 0 && (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
           <Grid3X3 size={48} className="mx-auto mb-4 text-slate-300" />
-          <h2 className="text-lg font-bold text-slate-700 mb-2">No hay mesas configuradas</h2>
-          <p className="text-sm text-slate-400 mb-4">Anade tus mesas para generar QRs y empezar a recibir pedidos.</p>
+          <h2 className="text-lg font-bold text-slate-700 mb-2">{t.mesas.subtitle}</h2>
+          <p className="text-sm text-slate-400 mb-4">{t.mesas.addTable}</p>
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { ChefHat, Clock, CheckCircle, Loader2, RefreshCw, Flame, Bell } from 'lucide-react'
+import { useI18n } from '@/shared/lib/i18n'
 
 interface OrderItem {
   id: string
@@ -24,6 +25,7 @@ interface KitchenOrder {
 }
 
 export default function CocinaPage() {
+  const { t } = useI18n()
   const [orders, setOrders] = useState<KitchenOrder[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -75,7 +77,7 @@ export default function CocinaPage() {
     return (
       <div className="flex items-center justify-center py-20 gap-3 text-slate-400">
         <Loader2 size={22} className="animate-spin" />
-        <span className="text-sm font-medium">Cargando cocina...</span>
+        <span className="text-sm font-medium">{t.common.loading}</span>
       </div>
     )
   }
@@ -90,10 +92,10 @@ export default function CocinaPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-            <ChefHat className="text-red-500" size={24} /> Cocina
+            <ChefHat className="text-red-500" size={24} /> {t.cocina.title}
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            {confirmed.length} nuevos — {preparing.length} preparando — {ready.length} listos
+            {confirmed.length} {t.cocina.pending} — {preparing.length} {t.cocina.preparing} — {ready.length} {t.cocina.ready}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -110,8 +112,8 @@ export default function CocinaPage() {
       {orders.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-16 text-center">
           <ChefHat size={56} className="mx-auto mb-4 text-slate-200" />
-          <h2 className="text-lg font-bold text-slate-600 mb-2">Cocina tranquila</h2>
-          <p className="text-sm text-slate-400">No hay pedidos pendientes. Apareceran aqui automaticamente.</p>
+          <h2 className="text-lg font-bold text-slate-600 mb-2">{t.cocina.noPending}</h2>
+          <p className="text-sm text-slate-400">{t.cocina.subtitle}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -144,7 +146,7 @@ export default function CocinaPage() {
                     <span className="text-2xl font-black text-slate-800">#{order.order_number}</span>
                     <div>
                       <p className="text-xs font-bold text-slate-600">
-                        {order.table_name || (order.type === 'takeaway' ? 'Para llevar' : 'Delivery')}
+                        {order.table_name || (order.type === 'takeaway' ? t.pedidos.takeaway : t.pedidos.deliveryLabel)}
                       </p>
                       <div className={`flex items-center gap-1 text-[10px] font-bold ${isUrgent ? 'text-red-600' : 'text-slate-400'}`}>
                         {isUrgent ? <Flame size={10} /> : <Clock size={10} />}
@@ -154,7 +156,7 @@ export default function CocinaPage() {
                   </div>
                   {order.status === 'ready' && (
                     <div className="flex items-center gap-1 bg-green-600 text-white px-3 py-1 rounded-lg">
-                      <Bell size={12} /> <span className="text-xs font-bold">LISTO</span>
+                      <Bell size={12} /> <span className="text-xs font-bold">{t.cocina.ready.toUpperCase()}</span>
                     </div>
                   )}
                   {order.status === 'confirmed' && (
@@ -162,7 +164,7 @@ export default function CocinaPage() {
                       onClick={() => handleStartPreparing(order.id)}
                       className="bg-orange-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-orange-600 transition-colors shadow-sm"
                     >
-                      Empezar
+                      {t.cocina.markPreparing}
                     </button>
                   )}
                 </div>

@@ -7,8 +7,10 @@ import {
 } from 'lucide-react'
 import PlatoModal from '@/features/carta/components/plato-modal'
 import { MenuCategory, MenuItem, ALLERGENS, TAGS } from '@/features/carta/types'
+import { useI18n } from '@/shared/lib/i18n'
 
 export default function CartaPage() {
+  const { t, formatPrice } = useI18n()
   const [categories, setCategories] = useState<MenuCategory[]>([])
   const [items, setItems] = useState<MenuItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -57,7 +59,7 @@ export default function CartaPage() {
   }
 
   const handleDeleteCategory = async (id: string) => {
-    if (!confirm('Eliminar esta categoria? Los platos quedaran sin categoria.')) return
+    if (!confirm(t.carta.deleteCategory + '?')) return
     await fetch(`/api/carta/categorias/${id}`, { method: 'DELETE' })
     loadData()
   }
@@ -80,7 +82,7 @@ export default function CartaPage() {
   }
 
   const handleDeletePlato = async (id: string) => {
-    if (!confirm('Eliminar este plato?')) return
+    if (!confirm(t.carta.deleteDish + '?')) return
     await fetch(`/api/carta/platos/${id}`, { method: 'DELETE' })
     loadData()
   }
@@ -118,7 +120,7 @@ export default function CartaPage() {
     return (
       <div className="flex items-center justify-center py-20 gap-3 text-slate-400">
         <Loader2 size={22} className="animate-spin" />
-        <span className="text-sm font-medium">Cargando carta...</span>
+        <span className="text-sm font-medium">{t.carta.saving}</span>
       </div>
     )
   }
@@ -130,22 +132,22 @@ export default function CartaPage() {
         <div>
           <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
             <UtensilsCrossed className="text-orange-500" size={24} />
-            Carta digital
+            {t.carta.title}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">{items.length} platos en {categories.length} categorias</p>
+          <p className="text-sm text-slate-500 mt-1">{items.length} {t.carta.noDishes === 'Sin platos' ? 'platos' : 'platos'} en {categories.length} categorias</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setShowCategoryForm(true)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors"
           >
-            <FolderPlus size={16} /> Categoria
+            <FolderPlus size={16} /> {t.carta.addCategory}
           </button>
           <button
             onClick={() => { setEditingItem(null); setModalOpen(true) }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30"
           >
-            <Plus size={16} /> Nuevo plato
+            <Plus size={16} /> {t.carta.addDish}
           </button>
         </div>
       </div>
@@ -163,7 +165,7 @@ export default function CartaPage() {
             />
           </div>
           <div className="flex-1">
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Nombre de la categoria</label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1">{t.carta.categoryName}</label>
             <input
               type="text" required value={categoryName}
               onChange={e => setCategoryName(e.target.value)}
@@ -173,10 +175,10 @@ export default function CartaPage() {
             />
           </div>
           <button type="submit" disabled={savingCategory} className="px-6 py-2.5 rounded-xl text-sm font-bold bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50 transition-colors">
-            {savingCategory ? 'Creando...' : 'Crear'}
+            {savingCategory ? t.carta.saving : t.carta.save}
           </button>
           <button type="button" onClick={() => setShowCategoryForm(false)} className="px-4 py-2.5 text-slate-400 hover:text-slate-600">
-            Cancelar
+            {t.carta.cancel}
           </button>
         </form>
       )}
@@ -199,7 +201,7 @@ export default function CartaPage() {
                 !selectedCategory ? 'bg-orange-500 text-white border-orange-500' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
               }`}
             >
-              Todos
+              {t.pedidos.all}
             </button>
             {categories.map(c => (
               <button
@@ -242,9 +244,9 @@ export default function CartaPage() {
               <div className="divide-y divide-slate-50">
                 {catItems.length === 0 ? (
                   <div className="py-8 text-center text-slate-400 text-sm">
-                    Sin platos en esta categoria.{' '}
+                    {t.carta.noDishes}.{' '}
                     <button onClick={() => { setEditingItem(null); setModalOpen(true) }} className="text-orange-500 font-bold hover:underline">
-                      Anadir uno
+                      {t.carta.addDish}
                     </button>
                   </div>
                 ) : catItems.map(item => (
@@ -253,6 +255,7 @@ export default function CartaPage() {
                     onEdit={() => { setEditingItem(item); setModalOpen(true) }}
                     onDelete={() => handleDeletePlato(item.id)}
                     onToggle={() => handleToggleAvailable(item)}
+                    formatPrice={formatPrice}
                   />
                 ))}
               </div>
@@ -272,6 +275,7 @@ export default function CartaPage() {
                   onEdit={() => { setEditingItem(item); setModalOpen(true) }}
                   onDelete={() => handleDeletePlato(item.id)}
                   onToggle={() => handleToggleAvailable(item)}
+                  formatPrice={formatPrice}
                 />
               ))}
             </div>
@@ -281,15 +285,15 @@ export default function CartaPage() {
         {items.length === 0 && (
           <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
             <UtensilsCrossed size={48} className="mx-auto mb-4 text-slate-300" />
-            <h2 className="text-lg font-bold text-slate-700 mb-2">Tu carta esta vacia</h2>
+            <h2 className="text-lg font-bold text-slate-700 mb-2">{t.carta.noDishes}</h2>
             <p className="text-sm text-slate-400 mb-6 max-w-sm mx-auto">
-              Empieza creando categorias (Entrantes, Principales, Postres...) y luego anade tus platos.
+              {t.carta.subtitle}
             </p>
             <button
               onClick={() => { setEditingItem(null); setModalOpen(true) }}
               className="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition-colors shadow-lg shadow-orange-500/30"
             >
-              Crear primer plato
+              {t.carta.addDish}
             </button>
           </div>
         )}
@@ -306,8 +310,8 @@ export default function CartaPage() {
   )
 }
 
-function ItemRow({ item, onEdit, onDelete, onToggle }: {
-  item: MenuItem; onEdit: () => void; onDelete: () => void; onToggle: () => void
+function ItemRow({ item, onEdit, onDelete, onToggle, formatPrice }: {
+  item: MenuItem; onEdit: () => void; onDelete: () => void; onToggle: () => void; formatPrice: (n: number) => string
 }) {
   return (
     <div className={`flex items-center gap-4 px-5 py-3 group hover:bg-slate-50/50 transition-colors ${!item.available ? 'opacity-50' : ''}`}>
@@ -330,15 +334,15 @@ function ItemRow({ item, onEdit, onDelete, onToggle }: {
           )}
           {item.tags?.length > 0 && (
             <div className="flex gap-1">
-              {item.tags.map(t => {
-                const tag = TAGS.find(tg => tg.id === t)
-                return tag ? <span key={t} className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${tag.color}`}>{tag.label}</span> : null
+              {item.tags.map(tg => {
+                const tag = TAGS.find(t => t.id === tg)
+                return tag ? <span key={tg} className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${tag.color}`}>{tag.label}</span> : null
               })}
             </div>
           )}
         </div>
       </div>
-      <p className="font-black text-slate-900 text-sm whitespace-nowrap">{Number(item.price).toFixed(2)} EUR</p>
+      <p className="font-black text-slate-900 text-sm whitespace-nowrap">{formatPrice(Number(item.price))}</p>
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <button onClick={onToggle} className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors" title={item.available ? 'Ocultar' : 'Mostrar'}>
           {item.available ? <Eye size={15} /> : <EyeOff size={15} />}
