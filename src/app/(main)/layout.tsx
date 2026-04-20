@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/shared/components/sidebar'
 import { useI18n } from '@/shared/lib/i18n'
-import { AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 interface SessionData {
@@ -44,13 +44,28 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   if (!session) return null
 
   const dateLocales: Record<string, string> = { es: 'es-ES', en: 'en-US', pt: 'pt-BR' }
+  const isDemo = session.user.email === 'demo@micamarero.es'
 
   return (
     <div className="min-h-screen bg-slate-50">
       <Sidebar user={session.user} tenant={session.tenant} plan={session.plan} />
       <main className="ml-60 min-h-screen">
+        {/* Demo banner */}
+        {isDemo && (
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
+                <Sparkles size={16} className="text-white" />
+              </div>
+              <p className="font-semibold text-sm truncate">{t.landing.demoBadge}</p>
+            </div>
+            <Link href="/signup" className="bg-white text-orange-600 px-4 py-2 rounded-lg text-xs font-bold hover:brightness-110 transition shadow-sm shrink-0">
+              {t.landing.demoExitButton}
+            </Link>
+          </div>
+        )}
         {/* Trial banner */}
-        {session.tenant.subscriptionStatus === 'trial' && (
+        {!isDemo && session.tenant.subscriptionStatus === 'trial' && (
           <div className="bg-orange-50 border-b border-orange-100 px-6 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
