@@ -22,8 +22,12 @@ export default function LandingPage() {
     setDemoLoading(true)
     try {
       const res = await fetch('/api/demo-login', { method: 'POST' })
-      if (res.ok) router.push('/')
-      else setDemoLoading(false)
+      if (res.ok) {
+        // Hard navigate para que el server vea la cookie nueva
+        window.location.href = '/carta'
+      } else {
+        setDemoLoading(false)
+      }
     } catch {
       setDemoLoading(false)
     }
