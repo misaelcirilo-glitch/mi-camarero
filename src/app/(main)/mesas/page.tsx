@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Grid3X3, Plus, QrCode, Users, Loader2, Copy, CheckCircle, Trash2 } from 'lucide-react'
+import { Grid3X3, Plus, QrCode, Users, Loader2, Copy, CheckCircle, Trash2, ClipboardList } from 'lucide-react'
+import Link from 'next/link'
 import { useI18n } from '@/shared/lib/i18n'
 
 interface Table {
@@ -180,6 +181,13 @@ export default function MesasPage() {
                       {t.pedidos.total}: {formatPrice(Number(table.order_total))}
                     </p>
                   )}
+
+                  <Link
+                    href={`/mesas/${table.id}/pedido`}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-all shadow-sm mb-2"
+                  >
+                    <ClipboardList size={14} /> Tomar pedido
+                  </Link>
 
                   <button
                     onClick={() => setShowQR(showQR === table.id ? null : table.id)}
