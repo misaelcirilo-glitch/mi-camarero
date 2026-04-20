@@ -7,8 +7,8 @@ import { PLAN_FEATURES, PLAN_PRICES } from '@/shared/lib/plans'
 import { useI18n } from '@/shared/lib/i18n'
 import { LocaleSwitcher } from '@/shared/components/LocaleSwitcher'
 import {
-  ArrowRight, Check, Sparkles, ChevronDown, Quote, Star, Shield,
-  ShoppingBag, ChefHat, Smartphone, TrendingUp, Users, Zap
+  ArrowRight, Check, Sparkles, ChevronDown, Shield,
+  ShoppingBag, ChefHat, Smartphone, TrendingUp, Users, Zap, Star
 } from 'lucide-react'
 
 export default function LandingPage() {
@@ -39,12 +39,6 @@ export default function LandingPage() {
     { q: t.landing.faq3Q, a: t.landing.faq3A },
     { q: t.landing.faq4Q, a: t.landing.faq4A },
     { q: t.landing.faq5Q, a: t.landing.faq5A },
-  ]
-
-  const testimonials = [
-    { name: t.landing.testimonial1Name, role: t.landing.testimonial1Role, text: t.landing.testimonial1Text, color: 'from-orange-500 to-red-500' },
-    { name: t.landing.testimonial2Name, role: t.landing.testimonial2Role, text: t.landing.testimonial2Text, color: 'from-blue-500 to-cyan-500' },
-    { name: t.landing.testimonial3Name, role: t.landing.testimonial3Role, text: t.landing.testimonial3Text, color: 'from-emerald-500 to-teal-500' },
   ]
 
   return (
@@ -273,36 +267,6 @@ export default function LandingPage() {
                 <span className="text-3xl">{f.icon}</span>
                 <h3 className="font-bold text-slate-800 mt-3 mb-1">{f.title}</h3>
                 <p className="text-sm text-slate-500">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">{t.landing.testimonialsTitle}</h2>
-            <p className="text-slate-500 mt-3">{t.landing.testimonialsSubtitle}</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((tt, i) => (
-              <div key={i} className="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 relative">
-                <Quote size={28} className="text-orange-200 absolute top-4 right-4" />
-                <div className="flex items-center gap-1 text-orange-400 mb-4">
-                  {[1, 2, 3, 4, 5].map(n => <Star key={n} size={14} fill="currentColor" />)}
-                </div>
-                <p className="text-slate-700 leading-relaxed text-sm">{tt.text}</p>
-                <div className="flex items-center gap-3 mt-5 pt-5 border-t border-slate-100">
-                  <div className={`w-10 h-10 bg-gradient-to-br ${tt.color} rounded-full flex items-center justify-center text-white font-black text-sm`}>
-                    {tt.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </div>
-                  <div>
-                    <p className="text-slate-800 text-sm font-bold">{tt.name}</p>
-                    <p className="text-xs text-slate-500">{tt.role}</p>
-                  </div>
-                </div>
               </div>
             ))}
           </div>

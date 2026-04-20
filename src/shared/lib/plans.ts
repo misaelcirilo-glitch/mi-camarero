@@ -25,14 +25,11 @@ export const PLAN_FEATURES: Record<string, { label: string; icon: string; descri
     { label: 'Pedidos online', icon: '🌐', description: 'Tu propio canal sin comisiones' },
     { label: 'Upselling inteligente', icon: '🧠', description: 'Sube el ticket medio un 15%' },
     { label: 'CRM básico', icon: '👥', description: 'Conoce a tus clientes' },
-    { label: 'Analytics', icon: '📊', description: 'Métricas de tu negocio' },
   ],
   premium: [
     { label: 'Todo de Pro', icon: '✅', description: 'Sin límites' },
     { label: 'Platos y mesas ilimitados', icon: '♾️', description: 'Escala sin freno' },
     { label: 'Fidelización + puntos', icon: '🏆', description: 'Programa de recompensas' },
-    { label: 'Branding personalizado', icon: '🎨', description: 'Tu marca, tus colores' },
-    { label: 'WhatsApp integrado', icon: '💬', description: 'Notificaciones automáticas' },
     { label: '20 usuarios', icon: '👥', description: 'Equipo completo' },
   ],
 }
